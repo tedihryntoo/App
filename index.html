@@ -27,7 +27,9 @@
       justify-content: space-between;
       padding: 30px 20px;
       overflow-y: auto;
-      z-index: 100;
+      z-index: 1000;
+      left: 0;
+      transition: left 0.3s ease;
     }
 
     .profile-img {
@@ -117,11 +119,32 @@
     }
     .sidebar-footer a { color: #149ddd; text-decoration: none; }
 
+    /* Mobile 3-Dot Toggle Button */
+    .mobile-toggle {
+      display: none;
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 1100;
+      background: #149ddd;
+      color: #fff;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      align-items: center;
+      justify-content: center;
+    }
+
     /* Main Content */
     main {
       margin-left: 300px;
       flex: 1;
       width: calc(100% - 300px);
+      transition: margin-left 0.3s ease;
     }
 
     /* Hero Section */
@@ -222,8 +245,19 @@
     }
 
     @media (max-width: 992px) {
-      aside { left: -300px; }
-      main { margin-left: 0; width: 100%; }
+      aside {
+        left: -300px;
+      }
+      aside.mobile-show {
+        left: 0;
+      }
+      main {
+        margin-left: 0;
+        width: 100%;
+      }
+      .mobile-toggle {
+        display: flex;
+      }
       .hero { padding: 0 30px; }
       .section { padding: 50px 20px; }
     }
@@ -231,8 +265,13 @@
 </head>
 <body>
 
+  <!-- Mobile 3-Dot Toggle Button -->
+  <button id="mobileToggle" class="mobile-toggle" aria-label="Menu">
+    <i class="fa fa-ellipsis-vertical"></i>
+  </button>
+
   <!-- Sidebar -->
-  <aside>
+  <aside id="sidebar">
     <div>
       <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Tedi Hryntoo" class="profile-img">
       <div class="profile-name">Tedi Hryntoo</div>
@@ -243,7 +282,7 @@
         <a href="mailto:tedihrynto@gmail.com"><i class="fa fa-envelope"></i></a>
       </div>
 
-      <ul class="nav-menu">
+      <ul class="nav-menu" id="navMenu">
         <li><a href="#hero" class="active"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="#about"><i class="fa fa-user"></i> About</a></li>
         <li><a href="#resume"><i class="fa fa-file-lines"></i> Resume</a></li>
@@ -376,6 +415,33 @@
   </main>
 
   <script>
+    const mobileToggle = document.getElementById('mobileToggle');
+    const sidebar = document.getElementById('sidebar');
+    const navLinks = document.querySelectorAll('#navMenu a');
+
+    mobileToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('mobile-show');
+      const icon = mobileToggle.querySelector('i');
+      if (sidebar.classList.contains('mobile-show')) {
+        icon.classList.remove('fa-ellipsis-vertical');
+        icon.classList.add('fa-xmark');
+      } else {
+        icon.classList.remove('fa-xmark');
+        icon.classList.add('fa-ellipsis-vertical');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 992) {
+          sidebar.classList.remove('mobile-show');
+          const icon = mobileToggle.querySelector('i');
+          icon.classList.remove('fa-xmark');
+          icon.classList.add('fa-ellipsis-vertical');
+        }
+      });
+    });
+
     const words = ["Developer", "IoT Engineer", "Elektromedik", "Tech Enthusiast"];
     let i = 0;
 
